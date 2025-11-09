@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { listObjects, type S3Object } from '$lib/api';
 	import { writable } from 'svelte/store';
 
 	export let path = '';
 	export let onFileSelect: (path: string) => void;
+	const dispatch = createEventDispatcher();
 
 	let objects = writable<S3Object[]>([]);
 	let isOpen = writable(false);
@@ -21,6 +22,7 @@
 		if ($isOpen) {
 			fetchObjects();
 		}
+		dispatch('folderclick', path);
 	}
 </script>
 
@@ -35,7 +37,7 @@
         {#await listObjects(path) then initialObjects}
             {#each initialObjects as object}
                 {#if object.isFolder}
-                    <svelte:self path={object.fullName} {onFileSelect} />
+                    <svelte:self path={object.fullName} {onFileSelect} on:folderclick />
                 {:else}
                     <button on:click={() => onFileSelect(object.fullName)} class="text-left w-full pl-4">
                         {object.name}
