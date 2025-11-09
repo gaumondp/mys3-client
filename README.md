@@ -12,7 +12,7 @@ A lightweight, local web client for managing a Minio (S3-compatible) bucket. Bui
 
 ## Requirements
 
--   **Node.js**: It is recommended to use a Long-Term Support (LTS) version of Node.js (e.g., v18, v20, v22). Using non-LTS versions (e.g., v23) may cause dependency installation issues.
+-   **Node.js**: Node.js 20 LTS or higher is required.
 
 ## Setup and Installation
 
