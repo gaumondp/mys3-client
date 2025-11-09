@@ -105,6 +105,13 @@
 			}
 		}
 	}
+
+	function handleFolderClick(event: CustomEvent<string>) {
+		const path = event.detail;
+		selectedFile.set(null); // Explicitly close the editor
+		currentPath.set(path);
+		fetchObjects(path);
+	}
 </script>
 
 <!-- App Shell -->
@@ -123,13 +130,13 @@
         <!-- Left Panel (File Tree) -->
         <div class="w-1/4 border-r border-surface-200-700-token p-4">
             <h2 class="h2">Files</h2>
-            <FileTree onFileSelect={handleFileSelect} />
+            <FileTree onFileSelect={handleFileSelect} on:folderclick={handleFolderClick} />
         </div>
 
         <!-- Right Panel (Content View) -->
         <div class="w-3/4 p-4">
 			{#if $selectedFile}
-				<Editor filePath={$selectedFile} />
+				<Editor filePath={$selectedFile} on:close={() => selectedFile.set(null)} />
 			{:else}
 				<div class="flex justify-between items-center mb-4">
 					<h2 class="h2">{$currentPath}</h2>
