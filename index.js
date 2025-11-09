@@ -44,13 +44,16 @@ app.get('/api/objects', (req, res) => {
   const stream = minioClient.listObjects(bucketName, prefix, false); // recursive = false
 
   stream.on('data', (obj) => {
-    objects.push({
-      name: obj.name.substring(prefix.length), // Show relative name
-      fullName: obj.name,
-      isFolder: obj.name.endsWith('/'),
-      lastModified: obj.lastModified,
-      size: obj.size,
-    });
+    // Guard against null or undefined objects from the stream
+    if (obj && obj.name) {
+      objects.push({
+        name: obj.name.substring(prefix.length), // Show relative name
+        fullName: obj.name,
+        isFolder: obj.name.endsWith('/'),
+        lastModified: obj.lastModified,
+        size: obj.size,
+      });
+    }
   });
 
   stream.on('error', (err) => {
