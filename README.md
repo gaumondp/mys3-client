@@ -10,6 +10,10 @@ A lightweight, local web client for managing a Minio (S3-compatible) bucket. Bui
 -   **Easy Configuration**: Configure the client with a simple `.env` file.
 -   **Self-Contained**: The Express server handles both the backend API and serves the frontend application.
 
+## Requirements
+
+-   **Node.js**: It is recommended to use a Long-Term Support (LTS) version of Node.js (e.g., v18, v20, v22). Using non-LTS versions (e.g., v23) may cause dependency installation issues.
+
 ## Setup and Installation
 
 1.  **Clone the repository:**
