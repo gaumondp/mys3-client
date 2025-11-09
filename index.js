@@ -199,5 +199,5 @@ if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
+  console.log('\x1b[32m%s\x1b[0m', `MyS3 Web Client is ready! Access it here: http://localhost:${port}`);
 });
