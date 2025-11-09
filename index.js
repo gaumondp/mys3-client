@@ -44,16 +44,27 @@ app.get('/api/objects', (req, res) => {
   const stream = minioClient.listObjects(bucketName, prefix, false); // recursive = false
 
   stream.on('data', (obj) => {
-    // Guard against null or undefined objects from the stream
-    if (obj && obj.name) {
+    // When listing non-recursively, the stream sends two types of objects:
+    // 1. File objects, which have a 'name' property.
+    // 2. Directory objects, which have a 'prefix' property.
+    if (obj.name) { // It's a file
       objects.push({
-        name: obj.name.substring(prefix.length), // Show relative name
+        name: obj.name.substring(prefix.length),
         fullName: obj.name,
         isFolder: obj.name.endsWith('/'),
         lastModified: obj.lastModified,
         size: obj.size,
       });
+    } else if (obj.prefix) { // It's a directory
+      objects.push({
+        name: obj.prefix.substring(prefix.length),
+        fullName: obj.prefix,
+        isFolder: true,
+        lastModified: null, // listObjects doesn't provide this for directories
+        size: 0,
+      });
     }
+    // Any other object types from the stream are safely ignored.
   });
 
   stream.on('error', (err) => {
