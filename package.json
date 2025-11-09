@@ -1,0 +1,29 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Minio S3 Compatible light client in Node.js for local testing with parameters written in a .env file.",
+  "main": "index.js",
+  "scripts": {
+    "mys3": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaumondp/mys3-client.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/gaumondp/mys3-client/issues"
+  },
+  "homepage": "https://github.com/gaumondp/mys3-client#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "minio": "^8.0.6",
+    "multer": "^2.0.2",
+    "nodemon": "^3.1.10"
+  }
+}
