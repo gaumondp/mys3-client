@@ -180,8 +180,10 @@ app.delete('/api/objects', async (req, res) => {
   }
 });
 
-// Fallback to the Svelte app for any other requests
-app.get('/*', (req, res) => {
+// Fallback to the Svelte app for any other requests.
+// This route uses a regular expression to match any path that does NOT start with /api.
+// This is the correct way to implement a catch-all for a Single Page Application (SPA).
+app.get(/^(?!\/api).*$/, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
