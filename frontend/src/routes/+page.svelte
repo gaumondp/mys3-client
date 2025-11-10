@@ -12,6 +12,7 @@
 	let isLoading = writable(true);
 	let fileInput: HTMLInputElement;
 	let selectedFile = writable<string | null>(null);
+	let fileTreeKey = 0;
 
 	const modalStore = getModalStore();
 
@@ -79,6 +80,7 @@
 			await deleteFolderRecursive(object.fullName);
 			toast.success('Folder deleted successfully!');
 			fetchObjects($currentPath); // Refresh the list
+			fileTreeKey++;
 		} catch (error) {
 			toast.error('Error: Could not delete folder.');
 		}
@@ -115,6 +117,7 @@
 			await deleteObject(object.fullName);
 			toast.success('Object deleted successfully!');
 			fetchObjects($currentPath); // Refresh the list
+			fileTreeKey++;
 		} catch (error) {
 			toast.error('Error: Could not delete object.');
 		}
@@ -158,7 +161,9 @@
         <!-- Left Panel (File Tree) -->
         <div class="w-1/4 border-r border-surface-200-700-token p-4">
             <h2 class="h2">Files</h2>
-            <FileTree onFileSelect={handleFileSelect} on:folderclick={handleFolderClick} />
+            {#key fileTreeKey}
+                <FileTree onFileSelect={handleFileSelect} on:folderclick={handleFolderClick} />
+            {/key}
         </div>
 
         <!-- Right Panel (Content View) -->
