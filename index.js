@@ -47,7 +47,9 @@ app.get('/api/objects', (req, res) => {
     // When listing non-recursively, the stream sends two types of objects:
     // 1. File objects, which have a 'name' property.
     // 2. Directory objects, which have a 'prefix' property.
-    if (obj.name) { // It's a file
+
+    // Exclude the parent folder itself from the list to prevent self-nesting.
+    if (obj.name && obj.name !== prefix) { // It's a file
       objects.push({
         name: obj.name.substring(prefix.length),
         fullName: obj.name,
@@ -55,7 +57,7 @@ app.get('/api/objects', (req, res) => {
         lastModified: obj.lastModified,
         size: obj.size,
       });
-    } else if (obj.prefix) { // It's a directory
+    } else if (obj.prefix && obj.prefix !== prefix) { // It's a directory
       objects.push({
         name: obj.prefix.substring(prefix.length),
         fullName: obj.prefix,
@@ -106,7 +108,7 @@ app.post('/api/files/upload', upload.array('files'), async (req, res) => {
   try {
     const prefix = req.body.prefix || '';
     const uploadPromises = req.files.map((file) => {
-      const objectName = prefix + file.originalname;
+      const objectName = prefix + file.originalname.normalize('NFC');
       return minioClient.putObject(bucketName, objectName, file.buffer, file.size);
     });
     await Promise.all(uploadPromises);

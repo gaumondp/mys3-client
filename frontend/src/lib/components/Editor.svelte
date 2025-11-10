@@ -40,7 +40,7 @@
     <div class="flex justify-between items-center mb-4">
         <h3 class="h3">{filePath}</h3>
     <div class="flex space-x-2">
-        <button class="btn variant-filled-primary" on:click={handleSave}>Save</button>
+        <button class="btn variant-filled-success" on:click={handleSave}>Save</button>
         <button class="btn variant-filled" on:click={() => dispatch('close')}>Close File</button>
     </div>
     </div>

@@ -6,6 +6,6 @@
 	initializeStores();
 </script>
 
-<Toaster />
+<Toaster closeButton duration={2000} />
 <Modal />
 <slot />
