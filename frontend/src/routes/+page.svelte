@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppShell, AppBar, getModalStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { listObjects, createFolder, uploadFiles, deleteObject, renameObject, type S3Object } from '$lib/api';
+	import { listObjects, createFolder, uploadFiles, deleteObject, renameObject, getFolderContents, deleteFolderRecursive, type S3Object } from '$lib/api';
 	import { writable } from 'svelte/store';
 	import { toast } from 'svelte-sonner';
 	import FileTree from '$lib/components/FileTree.svelte';
@@ -53,6 +53,34 @@
 			} catch (error) {
 				toast.error('Error: Could not create folder.');
 			}
+		}
+	}
+
+	async function confirmFolderDelete(object: S3Object) {
+		try {
+			const { fileCount, folderCount } = await getFolderContents(object.fullName);
+			modalStore.trigger({
+				type: 'confirm',
+				title: 'Confirm Folder Deletion',
+				body: `Are you sure you want to delete the folder "${object.name}" and all ${fileCount} files and ${folderCount} sub-folders it contains? This action cannot be undone.`,
+				buttonTextConfirm: 'Delete',
+				buttonTextCancel: 'Cancel',
+				response: (r) => {
+					if (r) handleFolderDelete(object);
+				},
+			});
+		} catch (error) {
+			toast.error('Error: Could not get folder contents.');
+		}
+	}
+
+	async function handleFolderDelete(object: S3Object) {
+		try {
+			await deleteFolderRecursive(object.fullName);
+			toast.success('Folder deleted successfully!');
+			fetchObjects($currentPath); // Refresh the list
+		} catch (error) {
+			toast.error('Error: Could not delete folder.');
 		}
 	}
 
@@ -167,7 +195,11 @@
 								<h3 class="h3">{object.name}</h3>
 								<div class="flex justify-end space-x-2">
 									<button class="btn btn-sm variant-filled-error" on:click={() => handleRename(object)}>Rename</button>
-									<button class="btn btn-sm variant-filled-error" on:click={() => confirmDelete(object)}>Delete</button>
+									{#if object.isFolder}
+										<button class="btn btn-sm variant-filled-error" on:click={() => confirmFolderDelete(object)}>Delete Folder</button>
+									{:else}
+										<button class="btn btn-sm variant-filled-error" on:click={() => confirmDelete(object)}>Delete File</button>
+									{/if}
 								</div>
 							</div>
 						{/each}

@@ -80,6 +80,35 @@ app.get('/api/objects', (req, res) => {
 });
 
 /**
+ * Gets the contents of a folder for deletion confirmation.
+ * @route GET /api/folders/contents
+ * @param {string} req.query.path - The full path of the folder.
+ */
+app.get('/api/folders/contents', (req, res) => {
+  const folderPath = req.query.path;
+  let fileCount = 0;
+  let folderCount = 0;
+  const stream = minioClient.listObjects(bucketName, folderPath, false);
+
+  stream.on('data', (obj) => {
+    if (obj.name) {
+      fileCount++;
+    } else if (obj.prefix) {
+      folderCount++;
+    }
+  });
+
+  stream.on('error', (err) => {
+    console.error('Error listing folder contents:', err);
+    res.status(500).send('Failed to list folder contents');
+  });
+
+  stream.on('end', () => {
+    res.json({ fileCount, folderCount });
+  });
+});
+
+/**
  * Creates a new folder.
  * Folders in S3 are zero-byte objects with a name ending in "/".
  * @route POST /api/folders
@@ -108,7 +137,9 @@ app.post('/api/files/upload', upload.array('files'), async (req, res) => {
   try {
     const prefix = req.body.prefix || '';
     const uploadPromises = req.files.map((file) => {
-      const objectName = prefix + file.originalname.normalize('NFC');
+      // Re-encode filename from Latin-1 to UTF-8 to handle special characters correctly.
+      const correctFilename = Buffer.from(file.originalname, 'latin1').toString('utf8');
+      const objectName = prefix + correctFilename;
       return minioClient.putObject(bucketName, objectName, file.buffer, file.size);
     });
     await Promise.all(uploadPromises);
@@ -193,6 +224,45 @@ app.delete('/api/objects', async (req, res) => {
   } catch (err) {
     console.error('Error deleting object:', err);
     res.status(500).send('Failed to delete object');
+  }
+});
+
+/**
+ * Recursively deletes a folder and its contents.
+ * @route DELETE /api/folders/recursive
+ * @param {string} req.body.path - The full path of the folder to delete.
+ */
+app.delete('/api/folders/recursive', async (req, res) => {
+  try {
+    const folderPath = req.body.path;
+    const objectsList = [];
+    const stream = minioClient.listObjects(bucketName, folderPath, true);
+
+    stream.on('data', (obj) => {
+      objectsList.push(obj.name);
+    });
+
+    stream.on('error', (err) => {
+      console.error('Error listing objects for deletion:', err);
+      return res.status(500).send('Failed to list objects for deletion');
+    });
+
+    stream.on('end', async () => {
+      try {
+        if (objectsList.length > 0) {
+          await minioClient.removeObjects(bucketName, objectsList);
+        }
+        // Also remove the folder object itself
+        await minioClient.removeObject(bucketName, folderPath);
+        res.status(200).send('Folder and contents deleted successfully');
+      } catch (err) {
+        console.error('Error during object deletion:', err);
+        res.status(500).send('Failed to delete objects');
+      }
+    });
+  } catch (err) {
+    console.error('Error deleting folder:', err);
+    res.status(500).send('Failed to delete folder');
   }
 });
 

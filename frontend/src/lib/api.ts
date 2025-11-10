@@ -122,3 +122,32 @@ export async function deleteObject(path: string): Promise<void> {
         throw new Error('Failed to delete object');
     }
 }
+
+/**
+ * Gets the contents of a folder.
+ * @param path The path of the folder.
+ * @returns A promise that resolves to the folder contents.
+ */
+export async function getFolderContents(path: string): Promise<{ fileCount: number; folderCount: number }> {
+    const response = await fetch(`${BASE_URL}/folders/contents?path=${encodeURIComponent(path)}`);
+    if (!response.ok) {
+        throw new Error('Failed to get folder contents');
+    }
+    return await response.json();
+}
+
+/**
+ * Deletes a folder recursively.
+ * @param path The path of the folder to delete.
+ * @returns A promise that resolves when the folder is deleted.
+ */
+export async function deleteFolderRecursive(path: string): Promise<void> {
+    const response = await fetch(`${BASE_URL}/folders/recursive`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path }),
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete folder');
+    }
+}
