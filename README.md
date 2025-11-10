@@ -43,7 +43,13 @@ A lightweight, local web client for managing a Minio (S3-compatible) bucket. Bui
 
 ## Usage
 
-To start the server, run the following command from the project root:
+After cloning the repository or pulling new changes, you must build the frontend first. Run the following command from the project root:
+```bash
+npm run build
+```
+This command only needs to be run once after updating the code. It will install the frontend dependencies and compile the Svelte application.
+
+Once the build is complete, you can start the server:
 ```bash
 npm run mys3
 ```
