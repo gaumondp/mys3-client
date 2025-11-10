@@ -166,8 +166,8 @@
 							<div class="card p-4">
 								<h3 class="h3">{object.name}</h3>
 								<div class="flex justify-end space-x-2">
-									<button class="btn btn-sm variant-soft" on:click={() => handleRename(object)}>Rename</button>
-									<button class="btn btn-sm variant-soft-error" on:click={() => confirmDelete(object)}>Delete</button>
+									<button class="btn btn-sm variant-filled-error" on:click={() => handleRename(object)}>Rename</button>
+									<button class="btn btn-sm variant-filled-error" on:click={() => confirmDelete(object)}>Delete</button>
 								</div>
 							</div>
 						{/each}
