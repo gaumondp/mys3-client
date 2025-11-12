@@ -39,7 +39,11 @@ app.use(express.static(path.join(__dirname, 'public')));
  * @returns {Error}  500 - Server error.
  */
 app.get('/api/objects', (req, res) => {
-  const prefix = req.query.prefix || '';
+  let prefix = req.query.prefix || '';
+  // Treat the root path '/' as an empty prefix for Minio.
+  if (prefix === '/') {
+    prefix = '';
+  }
   const objects = [];
   const stream = minioClient.listObjects(bucketName, prefix, false); // recursive = false
 
