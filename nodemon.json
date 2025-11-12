@@ -1,0 +1,11 @@
+{
+  "watch": ["index.js"],
+  "ext": "js,json",
+  "ignore": [
+    "frontend/",
+    "public/",
+    "node_modules/",
+    "mys3.log"
+  ],
+  "exec": "node index.js"
+}

@@ -283,7 +283,31 @@ if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
   }
 }
 
-// Start the server
-app.listen(port, () => {
-  console.log('\x1b[32m%s\x1b[0m', `MyS3 Web Client is ready! Access it here: http://localhost:${port}`);
-});
+// --- Server Start ---
+
+/**
+ * Checks if the configured bucket exists and creates it if it doesn't.
+ * Then, it starts the Express server.
+ */
+async function startServer() {
+  try {
+    const bucketExists = await minioClient.bucketExists(bucketName);
+    if (!bucketExists) {
+      console.log(`Bucket "${bucketName}" does not exist. Attempting to create it...`);
+      // Note: makeBucket is region-agnostic. Leave region empty.
+      await minioClient.makeBucket(bucketName, '');
+      console.log(`Bucket "${bucketName}" created successfully.`);
+    }
+
+    app.listen(port, () => {
+      console.log('\x1b[32m%s\x1b[0m', `MyS3 Web Client is ready! Access it here: http://localhost:${port}`);
+    });
+
+  } catch (err) {
+    console.error('\x1b[31m%s\x1b[0m', 'Failed to connect to Minio or create bucket.');
+    console.error(err);
+    process.exit(1); // Exit if Minio is not available
+  }
+}
+
+startServer();
