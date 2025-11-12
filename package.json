@@ -4,7 +4,7 @@
   "description": "Minio S3 Compatible light client in Node.js for local testing with parameters written in a .env file.",
   "main": "index.js",
   "scripts": {
-    "mys3": "nodemon index.js",
+    "mys3": "npx nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd frontend && npm install && npm run build"
   },
