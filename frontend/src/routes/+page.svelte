@@ -60,8 +60,10 @@
 	}
 
 	async function confirmFolderDelete(object: S3Object) {
+		console.log(`[+page.svelte] confirmFolderDelete called for folder: ${object.fullName}`);
 		try {
 			const { fileCount, folderCount } = await getFolderContents(object.fullName);
+			console.log(`[+page.svelte] Folder contents: ${fileCount} files, ${folderCount} folders`);
 			showModal(ConfirmModal, {
 				data: {
 					title: $_('confirm_delete.erase_folder_title'),
@@ -73,6 +75,7 @@
 				}
 			});
 		} catch (error) {
+			console.error('[+page.svelte] Error getting folder contents:', error);
 			toast.error($_('toasts.get_folder_contents_error'));
 		}
 	}
@@ -102,6 +105,7 @@
 	}
 
 	function confirmDelete(object: S3Object) {
+		console.log(`[+page.svelte] confirmDelete called for file: ${object.fullName}`);
 		showModal(ConfirmModal, {
 			data: {
 				title: $_('confirm_delete.erase_file_title'),

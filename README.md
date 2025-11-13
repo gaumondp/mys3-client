@@ -79,3 +79,7 @@ For a better development experience, you can run the backend server and the fron
     npm run dev
     ```
     The Svelte application will be available at `http://localhost:5173` (or another port if 5173 is in use). The frontend development server will automatically proxy API requests to the backend server running on port 9002.
+
+## Debugging
+
+To disable the frontend cache for debugging purposes, add the `?nocache=true` query parameter to the URL (e.g., `http://localhost:5173/?nocache=true`). This will append a timestamp to all API requests, ensuring you always get the latest data from the server.

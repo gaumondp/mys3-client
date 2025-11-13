@@ -9,8 +9,16 @@
 		buttonTextCancel?: string;
 	};
 
+	console.log('[ConfirmModal.svelte] Component initialized with data:', data);
+
 	function handleConfirm() {
+		console.log('[ConfirmModal.svelte] Confirm button clicked.');
 		data.onConfirm();
+		hideModal();
+	}
+
+	function handleCancel() {
+		console.log('[ConfirmModal.svelte] Cancel button clicked.');
 		hideModal();
 	}
 </script>

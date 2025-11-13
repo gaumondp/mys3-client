@@ -1,12 +1,16 @@
 <script lang="ts">
-	import { modal, hideModal } from '$lib/stores.svelte';
+	import { getModal, hideModal } from '$lib/stores.svelte';
+	const modal = getModal();
 
 	let dialog = $state<HTMLDialogElement>();
 
 	$effect(() => {
+		console.log('[Modal.svelte] Effect triggered. Modal component is:', modal.component ? modal.component.name : null);
 		if (modal.component && dialog) {
+			console.log('[Modal.svelte] Attempting to show dialog.');
 			dialog.showModal();
 		} else if (dialog) {
+			console.log('[Modal.svelte] Attempting to close dialog.');
 			dialog.close();
 		}
 	});
