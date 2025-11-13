@@ -11,11 +11,7 @@
 		props: {}
 	};
 
-	const modal = $state(initialModalState);
-
-	export function getModal() {
-		return modal;
-	}
+	export const modal = $state(initialModalState);
 
 	export function showModal(component: typeof SvelteComponent, props: Record<string, unknown> = {}) {
 		modal.component = component;
