@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>MyS3 Client</title>
+</svelte:head>
+
 <script lang="ts">
 	import { listObjects, createFolder, uploadFiles, deleteObject, renameObject, getFolderContents, deleteFolderRecursive, type S3Object } from '$lib/api';
 	import { toast } from 'svelte-sonner';
