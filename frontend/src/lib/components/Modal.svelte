@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { getModal, hideModal } from '$lib/stores.svelte';
-	const modal = getModal();
+	import { modal, hideModal } from '$lib/stores.svelte';
 
 	let dialog = $state<HTMLDialogElement>();
 
