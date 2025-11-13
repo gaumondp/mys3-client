@@ -6,6 +6,8 @@
 	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
 	import FileTree from '$lib/components/FileTree.svelte';
 	import Editor from '$lib/components/Editor.svelte';
+	import LanguageSwitcher from '$lib/components/LanguageSwitcher.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let currentPath = $state('/');
 	let objects = $state<S3Object[]>([]);
@@ -20,7 +22,7 @@
 		try {
 			objects = await listObjects(path);
 		} catch (error) {
-			toast.error('Failed to fetch objects.');
+			toast.error($_('toasts.fetch_objects_error'));
 		} finally {
 			isLoading = false;
 		}
@@ -35,20 +37,20 @@
 		if (editableExtensions.some(ext => path.endsWith(ext))) {
 			selectedFile = path;
 		} else {
-			toast.info('This file type is not editable.');
+			toast.info($_('toasts.not_editable_error'));
 		}
 	}
 
 	async function handleNewFolder() {
-		const folderName = prompt('Enter new folder name:');
+		const folderName = prompt($_('toasts.create_folder_prompt'));
 		if (folderName) {
 			const newPath = currentPath + folderName + '/';
 			try {
 				await createFolder(newPath);
-				toast.success('Folder created successfully!');
+				toast.success($_('toasts.create_folder_success'));
 				fetchObjects(currentPath); // Refresh the list
 			} catch (error) {
-				toast.error('Error: Could not create folder.');
+				toast.error($_('toasts.create_folder_error'));
 			}
 		}
 	}
@@ -57,24 +59,24 @@
 		try {
 			const { fileCount, folderCount } = await getFolderContents(object.fullName);
 			showModal(ConfirmModal, {
-				title: 'Erase the folder?',
-				body: `Are you sure you want to delete the folder "${object.name}" and all ${fileCount} files and ${folderCount} sub-folders it contains? This action cannot be undone.`,
-				buttonTextConfirm: 'Confirm',
+				title: $_('confirm_delete.erase_folder_title'),
+				body: $_('confirm_delete.erase_folder_body', { values: { folderName: object.name, fileCount, folderCount } }),
+				buttonTextConfirm: $_('confirm_delete.confirm'),
 				onConfirm: () => handleFolderDelete(object),
 			});
 		} catch (error) {
-			toast.error('Error: Could not get folder contents.');
+			toast.error($_('toasts.get_folder_contents_error'));
 		}
 	}
 
 	async function handleFolderDelete(object: S3Object) {
 		try {
 			await deleteFolderRecursive(object.fullName);
-			toast.success('Folder deleted successfully!');
+			toast.success($_('toasts.delete_folder_success'));
 			fetchObjects(currentPath); // Refresh the list
 			fileTreeKey++;
 		} catch (error) {
-			toast.error('Error: Could not delete folder.');
+			toast.error($_('toasts.delete_folder_error'));
 		}
 	}
 
@@ -83,19 +85,19 @@
 		if (input.files) {
 			try {
 				await uploadFiles(currentPath, input.files);
-				toast.success('Files uploaded successfully!');
+				toast.success($_('toasts.upload_files_success'));
 				fetchObjects(currentPath); // Refresh the list
 			} catch (error) {
-				toast.error('Error: Could not upload files.');
+				toast.error($_('toasts.upload_files_error'));
 			}
 		}
 	}
 
 	function confirmDelete(object: S3Object) {
 		showModal(ConfirmModal, {
-			title: 'Erase the file?',
-			body: `Are you sure you want to delete "${object.name}"?`,
-			buttonTextConfirm: 'Confirm',
+			title: $_('confirm_delete.erase_file_title'),
+			body: $_('confirm_delete.erase_file_body', { values: { fileName: object.name } }),
+			buttonTextConfirm: $_('confirm_delete.confirm'),
 			onConfirm: () => handleDelete(object),
 		});
 	}
@@ -103,24 +105,24 @@
 	async function handleDelete(object: S3Object) {
 		try {
 			await deleteObject(object.fullName);
-			toast.success('Object deleted successfully!');
+			toast.success($_('toasts.delete_object_success'));
 			fetchObjects(currentPath); // Refresh the list
 			fileTreeKey++;
 		} catch (error) {
-			toast.error('Error: Could not delete object.');
+			toast.error($_('toasts.delete_object_error'));
 		}
 	}
 
 	async function handleRename(object: S3Object) {
-		const newName = prompt('Enter new name:', object.name);
+		const newName = prompt($_('toasts.rename_object_prompt'), object.name);
 		if (newName && newName !== object.name) {
 			const newPath = object.fullName.replace(object.name, newName);
 			try {
 				await renameObject(object.fullName, newPath);
-				toast.success('Object renamed successfully!');
+				toast.success($_('toasts.rename_object_success'));
 				fetchObjects(currentPath); // Refresh the list
 			} catch (error) {
-				toast.error('Error: Could not rename object.');
+				toast.error($_('toasts.rename_object_error'));
 			}
 		}
 	}
@@ -141,7 +143,7 @@
 	<div class="flex flex-grow overflow-hidden">
 		<!-- Left Panel (File Tree) -->
 		<div class="w-1/4 border-r border-gray-200 dark:border-gray-700 p-4 overflow-y-auto">
-			<h2 class="text-2xl font-bold mb-4">Files</h2>
+			<h2 class="text-2xl font-bold mb-4">{$_('page.files')}</h2>
 			{#key fileTreeKey}
 				<FileTree onFileSelect={handleFileSelect} on:folderclick={handleFolderClick} />
 			{/key}
@@ -159,7 +161,7 @@
 							class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
 							onclick={() => fileInput.click()}
 						>
-							Upload
+							{$_('page.upload')}
 						</button>
 						<input
 							type="file"
@@ -172,25 +174,25 @@
 							class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
 							onclick={handleNewFolder}
 						>
-							New Folder
+							{$_('page.new_folder')}
 						</button>
 					</div>
 				</div>
 
 				<!-- File/folder listing -->
 				{#if isLoading}
-					<p>Loading...</p>
+					<p>{$_('page.loading')}</p>
 				{:else}
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						{#each objects as object}
 							<div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col justify-between">
 								<h3 class="text-lg font-bold mb-2 truncate">{object.name}</h3>
 								<div class="flex justify-end space-x-2">
-									<button class="px-2 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600" onclick={() => handleRename(object)}>Rename</button>
+									<button class="px-2 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600" onclick={() => handleRename(object)}>{$_('page.rename')}</button>
 									{#if object.isFolder}
-										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmFolderDelete(object)}>Delete Folder</button>
+										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmFolderDelete(object)}>{$_('page.delete_folder')}</button>
 									{:else}
-										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmDelete(object)}>Delete File</button>
+										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmDelete(object)}>{$_('page.delete_file')}</button>
 									{/if}
 								</div>
 							</div>
@@ -201,10 +203,12 @@
 		</div>
 	</div>
 
-	<footer class="p-4 border-t border-gray-200 dark:border-gray-700">
+	<footer class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+		<LanguageSwitcher />
 		<a href="https://github.com/gaumondp/mys3-client/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center hover:text-blue-500">
 			<GithubIcon className="w-5 h-5 mr-2" />
-			<span>View Source on GitHub</span>
+			<span>{$_('page.view_source')}</span>
 		</a>
+		<div></div>
 	</footer>
 </div>

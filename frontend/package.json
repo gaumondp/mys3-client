@@ -51,6 +51,7 @@
 		"@codemirror/state": "^6.5.2",
 		"@codemirror/view": "^6.38.6",
 		"codemirror": "^6.0.2",
+		"svelte-i18n": "^4.0.1",
 		"svelte-sonner": "^1.0.5"
 	}
 }

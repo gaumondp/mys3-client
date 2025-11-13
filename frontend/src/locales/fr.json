@@ -1,0 +1,37 @@
+
+{
+  "page": {
+    "files": "Fichiers",
+    "upload": "Télécharger",
+    "new_folder": "Nouveau dossier",
+    "loading": "Chargement...",
+    "rename": "Renommer",
+    "delete_folder": "Supprimer le dossier",
+    "delete_file": "Supprimer le fichier",
+    "view_source": "Voir la source sur GitHub"
+  },
+  "confirm_delete": {
+    "erase_folder_title": "Effacer le dossier ?",
+    "erase_folder_body": "Êtes-vous sûr de vouloir supprimer le dossier \"{folderName}\" et tous les {fileCount} fichiers et {folderCount} sous-dossiers qu'il contient ? Cette action est irréversible.",
+    "confirm": "Confirmer",
+    "erase_file_title": "Effacer le fichier ?",
+    "erase_file_body": "Êtes-vous sûr de vouloir supprimer \"{fileName}\" ?"
+  },
+  "toasts": {
+    "fetch_objects_error": "Échec de la récupération des objets.",
+    "not_editable_error": "Ce type de fichier n'est pas modifiable.",
+    "create_folder_prompt": "Entrez le nom du nouveau dossier :",
+    "create_folder_success": "Dossier créé avec succès !",
+    "create_folder_error": "Erreur : Impossible de créer le dossier.",
+    "get_folder_contents_error": "Erreur : Impossible d'obtenir le contenu du dossier.",
+    "delete_folder_success": "Dossier supprimé avec succès !",
+    "delete_folder_error": "Erreur : Impossible de supprimer le dossier.",
+    "upload_files_success": "Fichiers téléchargés avec succès !",
+    "upload_files_error": "Erreur : Impossible de télécharger les fichiers.",
+    "delete_object_success": "Objet supprimé avec succès !",
+    "delete_object_error": "Erreur : Impossible de supprimer l'objet.",
+    "rename_object_prompt": "Entrez le nouveau nom :",
+    "rename_object_success": "Objet renommé avec succès !",
+    "rename_object_error": "Erreur : Impossible de renommer l'objet."
+  }
+}
