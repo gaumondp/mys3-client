@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { listObjects, createFolder, uploadFiles, deleteObject, renameObject, getFolderContents, deleteFolderRecursive, type S3Object } from '$lib/api';
 	import { toast } from 'svelte-sonner';
+	import GithubIcon from '$lib/components/icons/GithubIcon.svelte';
 	import { showModal } from '$lib/stores.svelte';
 	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
 	import FileTree from '$lib/components/FileTree.svelte';
@@ -133,8 +134,8 @@
 </script>
 
 <div class="h-screen w-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-	<header class="p-4 border-b border-gray-200 dark:border-gray-700">
-		<strong class="text-xl uppercase">MyS3 Client</strong>
+	<header class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center">
+		<img src="/logo-mys3client.png" alt="MyS3 Client Logo" class="h-12" />
 	</header>
 
 	<div class="flex flex-grow overflow-hidden">
@@ -199,4 +200,11 @@
 			{/if}
 		</div>
 	</div>
+
+	<footer class="p-4 border-t border-gray-200 dark:border-gray-700">
+		<a href="https://github.com/gaumondp/mys3-client/" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center hover:text-blue-500">
+			<GithubIcon className="w-5 h-5 mr-2" />
+			<span>View Source on GitHub</span>
+		</a>
+	</footer>
 </div>
