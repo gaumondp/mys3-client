@@ -147,6 +147,15 @@
 		currentPath = path;
 		fetchObjects(path);
 	}
+
+	function handleDeleteClick(object: S3Object) {
+		console.log(`[+page.svelte] handleDeleteClick called for: ${object.fullName}`);
+		if (object.isFolder) {
+			confirmFolderDelete(object);
+		} else {
+			confirmDelete(object);
+		}
+	}
 </script>
 
 <div class="h-screen w-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
@@ -203,11 +212,7 @@
 								<h3 class="text-lg font-bold mb-2 truncate">{object.name}</h3>
 								<div class="flex justify-end space-x-2">
 									<button class="px-2 py-1 text-sm rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600" onclick={() => handleRename(object)}>{$_('page.rename')}</button>
-									{#if object.isFolder}
-										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmFolderDelete(object)}>{$_('page.delete_folder')}</button>
-									{:else}
-										<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => confirmDelete(object)}>{$_('page.delete_file')}</button>
-									{/if}
+									<button class="px-2 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white" onclick={() => handleDeleteClick(object)}>{object.isFolder ? $_('page.delete_folder') : $_('page.delete_file')}</button>
 								</div>
 							</div>
 						{/each}
