@@ -264,20 +264,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderBreadcrumb = (path) => {
         breadcrumbNav.innerHTML = '';
         const parts = path.split('/').filter(Boolean);
-        let current = '/';
+        let currentPath = ''; // Start with an empty path
         const root = document.createElement('a');
         root.href = '#';
         root.textContent = 'Root';
-        root.dataset.path = '/';
+        root.dataset.path = '/'; // Root is always '/'
         breadcrumbNav.appendChild(root);
 
         parts.forEach(part => {
-            current += `${part}/`;
+            currentPath += `${part}/`; // Append folder and slash
             breadcrumbNav.append(' / ');
             const link = document.createElement('a');
             link.href = '#';
             link.textContent = part;
-            link.dataset.path = current;
+            link.dataset.path = currentPath;
             breadcrumbNav.appendChild(link);
         });
     };
