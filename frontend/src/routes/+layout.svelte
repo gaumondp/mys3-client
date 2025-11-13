@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import '../app.css';
 	import { Toaster } from 'svelte-sonner';
 	import Modal from '$lib/components/Modal.svelte';
@@ -6,7 +7,7 @@
 	import { locale, waitLocale } from 'svelte-i18n';
 	import type { LayoutData } from './$types';
 
-	let { data }: { data: LayoutData } = $props();
+	let { data, children }: { data: LayoutData; children: Snippet } = $props();
 	locale.set(data.lang);
 </script>
 
@@ -15,5 +16,5 @@
 {:then}
 	<Toaster closeButton duration={2000} />
 	<Modal />
-	<slot />
+	{@render children()}
 {/await}
