@@ -73,7 +73,7 @@
 						<FileTree path={object.fullName} {onFileSelect} on:folderclick />
 					{:else}
 						<button onclick={() => onFileSelect(object.fullName)} class="text-left w-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded flex items-center">
-							<svelte:component this={getFileIcon(object.name)} className="w-5 h-5 mr-2" />
+							{@render getFileIcon(object.name)({ className: 'w-5 h-5 mr-2' })}
 							{object.name}
 						</button>
 					{/if}
