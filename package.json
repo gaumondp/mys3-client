@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "mys3": "npx nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cd frontend && npm install && npm run build"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -27,7 +26,5 @@
     "multer": "^2.0.2",
     "nodemon": "^3.1.10"
   },
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.5.10"
-  }
+  "devDependencies": {}
 }
