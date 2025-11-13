@@ -1,19 +1,11 @@
 <script lang="ts">
 	import { hideModal } from '$lib/stores.svelte';
 
-	let {
-		title,
-		body,
-		onConfirm,
-		buttonTextConfirm = 'Confirm',
-		buttonTextCancel = 'Cancel'
-	}: {
-		title: string;
-		body: string;
-		onConfirm: () => void;
-		buttonTextConfirm?: string;
-		buttonTextCancel?: string;
-	} = $props();
+	export let title: string;
+	export let body: string;
+	export let onConfirm: () => void;
+	export let buttonTextConfirm = 'Confirm';
+	export let buttonTextCancel = 'Cancel';
 
 	function handleConfirm() {
 		onConfirm();
