@@ -63,10 +63,14 @@
 		try {
 			const { fileCount, folderCount } = await getFolderContents(object.fullName);
 			showModal(ConfirmModal, {
-				title: $_('confirm_delete.erase_folder_title'),
-				body: $_('confirm_delete.erase_folder_body', { values: { folderName: object.name, fileCount, folderCount } }),
-				buttonTextConfirm: $_('confirm_delete.confirm'),
-				onConfirm: () => handleFolderDelete(object),
+				data: {
+					title: $_('confirm_delete.erase_folder_title'),
+					body: $_('confirm_delete.erase_folder_body', {
+						values: { folderName: object.name, fileCount, folderCount }
+					}),
+					buttonTextConfirm: $_('confirm_delete.confirm'),
+					onConfirm: () => handleFolderDelete(object)
+				}
 			});
 		} catch (error) {
 			toast.error($_('toasts.get_folder_contents_error'));
@@ -99,10 +103,12 @@
 
 	function confirmDelete(object: S3Object) {
 		showModal(ConfirmModal, {
-			title: $_('confirm_delete.erase_file_title'),
-			body: $_('confirm_delete.erase_file_body', { values: { fileName: object.name } }),
-			buttonTextConfirm: $_('confirm_delete.confirm'),
-			onConfirm: () => handleDelete(object),
+			data: {
+				title: $_('confirm_delete.erase_file_title'),
+				body: $_('confirm_delete.erase_file_body', { values: { fileName: object.name } }),
+				buttonTextConfirm: $_('confirm_delete.confirm'),
+				onConfirm: () => handleDelete(object)
+			}
 		});
 	}
 
