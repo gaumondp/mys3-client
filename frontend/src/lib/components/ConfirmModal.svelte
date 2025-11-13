@@ -1,11 +1,19 @@
 <script lang="ts">
 	import { hideModal } from '$lib/stores.svelte';
 
-	export let title: string;
-	export let body: string;
-	export let onConfirm: () => void;
-	export let buttonTextConfirm = 'Confirm';
-	export let buttonTextCancel = 'Cancel';
+	let {
+		title,
+		body,
+		onConfirm,
+		buttonTextConfirm = 'Confirm',
+		buttonTextCancel = 'Cancel'
+	}: {
+		title: string;
+		body: string;
+		onConfirm: () => void;
+		buttonTextConfirm?: string;
+		buttonTextCancel?: string;
+	} = $props();
 
 	function handleConfirm() {
 		onConfirm();
@@ -19,13 +27,13 @@
 	<div class="flex justify-end space-x-2">
 		<button
 			class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
-			on:click={hideModal}
+			onclick={hideModal}
 		>
 			{buttonTextCancel}
 		</button>
 		<button
 			class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
-			on:click={handleConfirm}
+			onclick={handleConfirm}
 		>
 			{buttonTextConfirm}
 		</button>

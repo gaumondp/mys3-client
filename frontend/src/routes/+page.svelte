@@ -57,9 +57,9 @@
 		try {
 			const { fileCount, folderCount } = await getFolderContents(object.fullName);
 			showModal(ConfirmModal, {
-				title: 'Confirm Folder Deletion',
+				title: 'Erase the folder?',
 				body: `Are you sure you want to delete the folder "${object.name}" and all ${fileCount} files and ${folderCount} sub-folders it contains? This action cannot be undone.`,
-				buttonTextConfirm: 'Delete',
+				buttonTextConfirm: 'Confirm',
 				onConfirm: () => handleFolderDelete(object),
 			});
 		} catch (error) {
@@ -93,9 +93,9 @@
 
 	function confirmDelete(object: S3Object) {
 		showModal(ConfirmModal, {
-			title: 'Confirm Deletion',
+			title: 'Erase the file?',
 			body: `Are you sure you want to delete "${object.name}"?`,
-			buttonTextConfirm: 'Delete',
+			buttonTextConfirm: 'Confirm',
 			onConfirm: () => handleDelete(object),
 		});
 	}
