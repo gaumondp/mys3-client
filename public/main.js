@@ -149,4 +149,174 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial load
     fetchTranslations(languageSelect.value);
     fetchFiles(currentPath);
+
+let editor;
+let currentFile = '';
+
+window.openFile = async (filePath) => {
+    try {
+        const response = await fetch(`/api/files/view?path=${encodeURIComponent(filePath)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch file content');
+        }
+        const content = await response.text();
+        editor.setValue(content);
+        currentFile = filePath;
+        const extension = filePath.split('.').pop();
+        const mode = getModeForExtension(extension);
+        editor.setOption('mode', mode);
+        showEditor();
+    } catch (error) {
+        console.error('Error fetching file content:', error);
+        alert('Could not load file content. Please check the console for more information.');
+    }
+}
+
+function initEditor() {
+    const editorTextarea = document.getElementById('editor');
+    if (editorTextarea) {
+        editor = CodeMirror.fromTextArea(editorTextarea, {
+            lineNumbers: true,
+            mode: 'text/plain'
+        });
+    }
+}
+
+async function openFile(filePath) {
+    try {
+        const response = await fetch(`/api/files/view?path=${encodeURIComponent(filePath)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch file content');
+        }
+        const content = await response.text();
+        editor.setValue(content);
+        currentFile = filePath;
+        const extension = filePath.split('.').pop();
+        const mode = getModeForExtension(extension);
+        editor.setOption('mode', mode);
+        showEditor();
+    } catch (error) {
+        console.error('Error fetching file content:', error);
+        alert('Could not load file content. Please check the console for more information.');
+    }
+}
+
+function getModeForExtension(ext) {
+    switch (ext) {
+        case 'js':
+            return 'javascript';
+        case 'json':
+            return 'application/json';
+        case 'css':
+            return 'css';
+        case 'html':
+            return 'htmlmixed';
+        case 'xml':
+            return 'xml';
+        case 'yaml':
+        case 'yml':
+            return 'yaml';
+        default:
+            return 'text/plain';
+    }
+}
+
+
+function showEditor() {
+    document.getElementById('file-list-container').classList.add('hidden');
+    document.getElementById('actions-bar').classList.add('hidden');
+    document.getElementById('breadcrumb').classList.add('hidden');
+    document.getElementById('editor-container').classList.remove('hidden');
+}
+
+function hideEditor() {
+    document.getElementById('file-list-container').classList.remove('hidden');
+    document.getElementById('actions-bar').classList.remove('hidden');
+    document.getElementById('breadcrumb').classList.remove('hidden');
+    document.getElementById('editor-container').classList.add('hidden');
+}
+
+async function saveFile(andClose) {
+    const content = editor.getValue();
+    try {
+        const response = await fetch('/api/files/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ path: currentFile, content: content })
+        });
+        if (!response.ok) {
+            throw new Error('Failed to save file');
+        }
+        alert('File saved successfully');
+        if (andClose) {
+            hideEditor();
+        }
+    } catch (error) {
+        console.error('Error saving file:', error);
+        alert('Could not save file. Please check the console for more information.');
+    }
+}
+
+    initEditor();
+
+    document.getElementById('close-editor-btn').addEventListener('click', hideEditor);
+    document.getElementById('save-btn').addEventListener('click', () => saveFile(false));
+    document.getElementById('save-close-btn').addEventListener('click', () => saveFile(true));
+
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileInput = document.getElementById('file-input');
+    const newFolderBtn = document.getElementById('new-folder-btn');
+
+    uploadBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async (event) => {
+        const files = event.target.files;
+        if (files.length === 0) return;
+
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file);
+        }
+        formData.append('prefix', currentPath);
+
+        try {
+            const response = await fetch('/api/files/upload', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) {
+                throw new Error('Failed to upload files');
+            }
+            alert('Files uploaded successfully!');
+            fetchFiles(currentPath);
+        } catch (error) {
+            console.error('Error uploading files:', error);
+            alert('Could not upload files. Please check the console for more information.');
+        }
+    });
+
+    newFolderBtn.addEventListener('click', async () => {
+        const folderName = prompt('Enter new folder name:');
+        if (!folderName) return;
+
+        try {
+            const response = await fetch('/api/folders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ path: currentPath + folderName + '/' })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to create folder');
+            }
+            alert('Folder created successfully!');
+            fetchFiles(currentPath);
+        } catch (error) {
+            console.error('Error creating folder:', error);
+            alert('Could not create folder. Please check the console for more information.');
+        }
+    });
 });
