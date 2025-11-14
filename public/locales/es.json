@@ -7,7 +7,11 @@
     "rename": "Renombrar",
     "delete_folder": "Eliminar carpeta",
     "delete_file": "Eliminar archivo",
-    "view_source": "Ver fuente en GitHub"
+        "view_source": "Ver fuente en GitHub",
+        "edit_file": "Editar archivo",
+        "close_without_saving": "Cerrar sin guardar",
+        "save": "Guardar",
+        "save_and_close": "Guardar y cerrar"
   },
   "confirm_delete": {
     "erase_folder_title": "¿Eliminar la carpeta?",
