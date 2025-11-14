@@ -7,7 +7,11 @@
     "rename": "Rename",
     "delete_folder": "Delete Folder",
     "delete_file": "Delete File",
-    "view_source": "View Source on GitHub"
+        "view_source": "View Source on GitHub",
+        "edit_file": "Edit file",
+        "close_without_saving": "Close without saving",
+        "save": "Save",
+        "save_and_close": "Save and close"
   },
   "confirm_delete": {
     "erase_folder_title": "Erase the folder?",
